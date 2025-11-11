@@ -1,22 +1,15 @@
 "use client";
 
-import { DrawerItem } from "@/src/types";
 import { drawerItems } from "@/src/utils/drawerItems";
 import { Role } from "@/src/constant/role";
 import SidebarItem from "./SideBarItem";
+import { useAuthUser } from "@/src/redux/api/authApi/useAuthUser";
+import { DrawerItem } from "@/src/types";
 
-export interface CustomJwtPayload {
-  name?: string;
-  email?: string;
-  role?: string;
-}
+const SideBar = () => {
+  const { user } = useAuthUser(); // Using the useAuthUser hook to get the user from Redux state
 
-interface SideBarProps {
-  user: CustomJwtPayload | null;
-}
-
-const SideBar = ({ user }: SideBarProps) => {
-  const userRole = user?.role as Role | undefined; // cast to Role safely
+  const userRole = user?.role as Role | undefined; // Cast to Role safely
   const userEmail = user?.email;
 
   return (

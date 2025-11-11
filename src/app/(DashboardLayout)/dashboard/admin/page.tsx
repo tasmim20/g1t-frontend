@@ -1,7 +1,18 @@
-import React from "react";
+// src/pages/dashboard/admin.tsx
+import { useAuthUser } from "@/src/redux/api/authApi/useAuthUser";
 
-const admin = () => {
-  return <div>admin dashboard</div>;
+const AdminDashboard = () => {
+  const { user } = useAuthUser();
+
+  return (
+    <div>
+      <h1>Admin Dashboard</h1>
+      <p>Name: {user?.name}</p>
+      <p>Email: {user?.email}</p>
+      <p>Role: {user?.role}</p>
+      {/* Add Admin-specific content */}
+    </div>
+  );
 };
 
-export default admin;
+export default AdminDashboard;

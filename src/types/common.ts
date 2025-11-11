@@ -59,7 +59,7 @@ export interface SignupDto {
   drivingLicense?: string; // Only required if role is DRIVER
   photo?: string; // Optional profile photo URL
 }
-export interface User {
+export interface Rider {
   id: number;
   firstName: string;
   lastName: string;
@@ -74,7 +74,13 @@ export interface User {
   updatedAt: string;
 }
 
-export interface Driver extends User {
+export interface Driver extends Rider {
   drivingLicense: string;
   role: typeof Role.DRIVER;
+}
+
+export interface CustomJwtPayload {
+  name?: string;
+  email?: string;
+  role?: string;
 }

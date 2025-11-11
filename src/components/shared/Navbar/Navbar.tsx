@@ -5,12 +5,12 @@ import { usePathname } from "next/navigation";
 import logo from "../../../../public/assets/green1taxi1.png";
 import Image from "next/image";
 import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa";
-import { AiFillProfile } from "react-icons/ai";
+import { useAuthUser } from "@/src/redux/api/authApi/useAuthUser"; // Use the custom hook
 
 // Mock pages for testing purposes
 const pages = [
-  "Pricing", // Pricing details for rides
-  "Booking", // Page for riders to book a taxi
+  "Register", // Pricing details for rides
+  "Login", // Page for riders to book a taxi
   "FAQ", // Frequently Asked Questions
   "Terms", // Terms of service
   "Privacy", // Privacy policy
@@ -21,11 +21,8 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false); // State for mobile menu toggle
   const [userProfileOpen, setUserProfileOpen] = useState(false); // State for user profile dropdown
 
-  // Simulate user data (Replace this with your real user authentication logic)
-  const user = {
-    name: "John Doe",
-    role: "student", // Simulate the user role (student, driver, rider, etc.)
-  };
+  // Access user data and login status from Redux via the useAuthUser hook
+  const { user, isLoggedIn } = useAuthUser();
 
   const isActive = (page: string) => {
     if (page === "Home") {
@@ -34,16 +31,19 @@ function Navbar() {
     return pathname === `/${page.toLowerCase()}`;
   };
 
+  // Function to get the dashboard link based on the user role
   const getDashboardLink = () => {
+    if (!user?.role) return "/"; // Redirect to homepage if no role exists
+
     switch (user.role) {
-      case "admin":
+      case "ADMIN":
         return "/dashboard/admin";
-      case "driver":
+      case "DRIVER":
         return "/dashboard/driver";
-      case "rider":
+      case "RIDER":
         return "/dashboard/rider";
       default:
-        return "/dashboard";
+        return "/dashboard"; // Fallback in case of an unknown role
     }
   };
 
@@ -64,14 +64,12 @@ function Navbar() {
             <p className="text-2xl font-bold text-green-800">green1taxi</p>
           </div>
 
-          {/* Mobile Menu Button (3-bar icon) */}
+          {/* Mobile Menu Button */}
           <div className="flex ml-auto md:hidden">
             <button onClick={toggleMenu} className="text-green-900">
               {menuOpen ? (
-                // Cross icon to close the menu
                 <FaTimes className="h-6 w-6" />
               ) : (
-                // 3-bar icon to open the menu
                 <FaBars className="h-6 w-6" />
               )}
             </button>
@@ -92,29 +90,10 @@ function Navbar() {
                 {page}
               </a>
             ))}
-            {/* {user ? (
-              <>
-                <a href={getDashboardLink()} className="text-lg font-medium">
-                  Dashboard
-                </a>
-                <a href="/logout" className="text-lg font-medium">
-                  Logout
-                </a>
-              </>
-            ) : (
-              <>
-                <a href="/login" className="text-lg font-medium">
-                  Login
-                </a>
-                <a href="/signup" className="text-lg font-medium">
-                  Sign Up
-                </a>
-              </>
-            )} */}
           </div>
 
           {/* Conditional Profile Icon for Desktop and Mobile */}
-          {user && (
+          {isLoggedIn && user && (
             <div className="relative flex items-center ml-4">
               <button onClick={toggleUserProfile} className="flex items-center">
                 <FaUserCircle className="w-8 h-8" />
@@ -126,12 +105,13 @@ function Navbar() {
                   <div className="px-4 py-2">{user.role}</div>
                   <div className="px-4 py-2">
                     <a href="/manage-account" className="block">
-                      Manage account
+                      {user.email}
                     </a>
                   </div>
                   <div className="px-4 py-2">
-                    <a href="/promotions" className="block">
-                      Promotions
+                    {/* Profile links */}
+                    <a href={getDashboardLink()} className="block">
+                      Dashboard
                     </a>
                   </div>
                   <div className="px-4 py-2 border-t">
@@ -154,13 +134,10 @@ function Navbar() {
             : "opacity-0 translate-y-[-100%]"
         }`}
       >
-        {/* Logo and Close icon */}
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center">
             <Image src={logo} alt="Logo" width={30} />
           </div>
-
-          {/* Close icon */}
           <div className="flex">
             <button onClick={toggleMenu} className="text-green-900">
               <FaTimes className="h-5 w-5" />
@@ -168,7 +145,6 @@ function Navbar() {
           </div>
         </div>
 
-        {/* Menu Links and User-specific options */}
         <div className="space-y-4">
           {pages.map((page) => (
             <a
@@ -181,46 +157,14 @@ function Navbar() {
               {page}
             </a>
           ))}
-
-          {/* {user ? (
-            <>
-              <a
-                href={getDashboardLink()}
-                className={`block text-lg font-medium ${
-                  isActive("dashboard") ? "text-black" : "text-gray-500"
-                }`}
-              >
-                Dashboard
-              </a>
-              <a
-                href="/logout"
-                className={`block text-lg font-medium ${
-                  isActive("logout") ? "text-black" : "text-gray-500"
-                }`}
-              >
-                Logout
-              </a>
-            </>
-          ) : (
-            <>
-              <a
-                href="/login"
-                className={`block text-lg font-medium ${
-                  isActive("login") ? "text-black" : "text-gray-500"
-                }`}
-              >
-                Login
-              </a>
-              <a
-                href="/signup"
-                className={`block text-lg font-medium ${
-                  isActive("signup") ? "text-black" : "text-gray-500"
-                }`}
-              >
-                Sign Up
-              </a>
-            </>
-          )} */}
+          {isLoggedIn && user && (
+            <a
+              href={getDashboardLink()}
+              className="block text-lg font-medium text-black"
+            >
+              Dashboard
+            </a>
+          )}
         </div>
       </div>
     </div>

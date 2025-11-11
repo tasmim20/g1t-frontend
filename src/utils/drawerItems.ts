@@ -73,7 +73,7 @@ export const drawerItems = (role: Role): DrawerItem[] => {
       );
       break;
 
-    case Role.USER:
+    case Role.RIDER:
       roleMenus.push(
         {
           title: "Dashboard",
