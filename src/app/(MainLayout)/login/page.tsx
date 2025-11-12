@@ -162,7 +162,7 @@ const LoginPage: React.FC = () => {
       toast.success("Login successful!");
 
       // Redirect based on role
-      if (res.role === "USER") router.replace("/dashboard/rider");
+      if (res.role === "RIDER") router.replace("/dashboard/rider");
       else if (res.role === "DRIVER") router.replace("/dashboard/driver");
       else if (res.role === "ADMIN") router.replace("/dashboard/admin");
       else router.replace("/");

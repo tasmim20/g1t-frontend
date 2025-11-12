@@ -42,14 +42,14 @@ export default function DashboardDrawer({ children }: DashboardDrawerProps) {
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar for desktop */}
       <div className="hidden sm:flex sm:flex-col w-64 bg-white border-r">
-        <SideBar user={user} />
+        <SideBar />
       </div>
 
       {/* Sidebar for mobile */}
       {mobileOpen && (
         <div className="sm:hidden fixed inset-0 z-50 flex bg-black/50">
           <div className="bg-white w-64">
-            <SideBar user={user} />
+            <SideBar />
           </div>
           <div className="flex-1" onClick={() => setMobileOpen(false)} />
         </div>

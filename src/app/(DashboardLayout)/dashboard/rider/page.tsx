@@ -1,5 +1,5 @@
 const user = () => {
-  return <div>rider/user dashboard</div>;
+  return <div>rider dashboard</div>;
 };
 
 export default user;
