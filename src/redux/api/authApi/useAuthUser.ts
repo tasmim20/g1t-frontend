@@ -20,6 +20,7 @@ export const useAuthUser = () => {
   }, [accessToken]);
 
   const isLoggedIn = !!user?.role && !!user?.email;
+  const id = user?.id ?? null;
 
-  return { user, isLoggedIn };
+  return { user, id, isLoggedIn };
 };

@@ -63,7 +63,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white shadow-md rounded-lg p-8 w-full max-w-md"
@@ -113,7 +113,7 @@ const LoginPage: React.FC = () => {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+          className="w-full bg-[#257417] text-white font-semibold py-3 rounded-md  transition-colors disabled:bg-gray-400"
         >
           {isLoading ? "Logging in..." : "Login"}
         </button>

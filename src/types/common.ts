@@ -80,7 +80,32 @@ export interface Driver extends Rider {
 }
 
 export interface CustomJwtPayload {
-  name?: string;
+  id?: number;
   email?: string;
   role?: string;
+}
+
+// src/types/profile.ts
+export interface RiderProfile {
+  profileId: number;
+  userId: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: "RIDER";
+  profilePhoto?: string;
+  bio?: string;
+  address?: string;
+}
+
+export interface DriverProfile {
+  profileId: number;
+  userId: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: "DRIVER";
+  profilePhoto?: string;
+  bio?: string;
+  address?: string;
 }

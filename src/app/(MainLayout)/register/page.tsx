@@ -91,7 +91,7 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow-md rounded-2xl p-6 mt-10">
+    <div className="max-w-md mx-auto  shadow-md rounded-2xl p-6 mt-10">
       <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <input
@@ -171,7 +171,7 @@ const RegisterPage: React.FC = () => {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+          className="w-full bg-[#257417] text-white py-2 rounded transition"
         >
           {isLoading ? "Registering..." : "Register"}
         </button>

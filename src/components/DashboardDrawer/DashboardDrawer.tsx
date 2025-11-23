@@ -1,19 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/redux/store";
-import { JwtPayload } from "jwt-decode";
-import { verifyToken } from "@/src/utils/verifyToken";
+import { useState } from "react";
 import SideBar from "../SideBar/SideBar";
 import { logoutUser } from "@/src/utils/actions/logout";
-
-interface CustomJwtPayload extends JwtPayload {
-  name?: string;
-  email?: string;
-  image?: string;
-  role?: string;
-}
+import { useAuthUser } from "@/src/redux/api/authApi/useAuthUser";
 
 interface DashboardDrawerProps {
   children: React.ReactNode;
@@ -23,21 +13,7 @@ export default function DashboardDrawer({ children }: DashboardDrawerProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Access token from Redux memory
-  const accessToken = useSelector((state: RootState) => state.auth.accessToken);
-
-  // Decode user from token using useMemo
-  const user: CustomJwtPayload | null = useMemo(() => {
-    if (!accessToken) return null;
-    try {
-      return verifyToken(accessToken) as CustomJwtPayload;
-    } catch (err) {
-      console.error("Token verification failed:", err);
-      return null;
-    }
-  }, [accessToken]);
-
-  const isLoggedIn = !!user?.role && !!user?.email;
-
+  const { user, isLoggedIn } = useAuthUser();
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar for desktop */}
@@ -58,7 +34,7 @@ export default function DashboardDrawer({ children }: DashboardDrawerProps) {
       {/* Main content */}
       <div className="flex-1 flex flex-col">
         {/* Navbar */}
-        <header className="flex items-center justify-between bg-[#132361] text-white h-16 px-4 shadow">
+        <header className="flex items-center justify-between  text-black h-16 px-4 shadow">
           <div className="flex items-center gap-4">
             <button
               className="sm:hidden text-white"
@@ -83,13 +59,11 @@ export default function DashboardDrawer({ children }: DashboardDrawerProps) {
 
             {user ? (
               <div>
-                <div className="text-gray-300 font-semibold">
-                  Hi, {user.name}
-                </div>
-                <div className="text-gray-300 text-sm">{user.email}</div>
+                <div className="text-black font-semibold">Assalamu Alaikum</div>
+                <div className="text-black  text-sm">{user.email}</div>
               </div>
             ) : (
-              <div className="text-gray-300 font-semibold">Loading...</div>
+              <div className="text-black  font-semibold">Loading...</div>
             )}
           </div>
 

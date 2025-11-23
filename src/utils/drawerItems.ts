@@ -16,7 +16,7 @@ export const drawerItems = (role: Role): DrawerItem[] => {
     case Role.ADMIN:
       roleMenus.push(
         {
-          title: "Dashboard",
+          title: "Profile",
           path: `/dashboard/admin`,
           icon: AiOutlineHome,
         },
@@ -51,20 +51,20 @@ export const drawerItems = (role: Role): DrawerItem[] => {
     case Role.DRIVER:
       roleMenus.push(
         {
-          title: "Dashboard",
+          title: "Profile",
           path: `/dashboard/driver`,
-          icon: AiOutlineHome,
+          icon: AiOutlineUser,
         },
         {
           title: "My Trips",
           path: `/dashboard/driver/trips`,
           icon: AiOutlineCalendar,
         },
-        {
-          title: "Profile",
-          path: `/dashboard/driver/profile`,
-          icon: AiOutlineUser,
-        },
+        // {
+        //   title: "Profile",
+        //   path: `/dashboard/driver/profile`,
+        //   icon: AiOutlineUser,
+        // },
         {
           title: "Payment History",
           path: `/dashboard/driver/payments`,
@@ -76,7 +76,7 @@ export const drawerItems = (role: Role): DrawerItem[] => {
     case Role.RIDER:
       roleMenus.push(
         {
-          title: "Dashboard",
+          title: "Profile",
           path: `/dashboard/rider`,
           icon: AiOutlineHome,
         },
@@ -85,11 +85,11 @@ export const drawerItems = (role: Role): DrawerItem[] => {
           path: `/dashboard/rider/rides`,
           icon: AiOutlineCalendar,
         },
-        {
-          title: "Profile",
-          path: `/dashboard/rider/profile`,
-          icon: AiOutlineUser,
-        },
+        // {
+        //   title: "Profile",
+        //   path: `/dashboard/rider/profile`,
+        //   icon: AiOutlineUser,
+        // },
         {
           title: "Payment History",
           path: `/dashboard/rider/payments`,

@@ -101,7 +101,7 @@ function Navbar() {
 
               {userProfileOpen && (
                 <div className="absolute right-0 mt-2 top-12 bg-white shadow-lg rounded-lg w-48 py-2 text-black">
-                  <div className="px-4 py-2 font-bold">{user.name}</div>
+                  <div className="px-4 py-2 font-bold">{user.id}</div>
                   <div className="px-4 py-2">{user.role}</div>
                   <div className="px-4 py-2">
                     <a href="/manage-account" className="block">

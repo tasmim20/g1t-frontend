@@ -8,7 +8,7 @@ const Footer = () => {
         {/* Upper Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {/* Logo / Brand */}
-          <div className="flex flex-col items-start text-center sm:text-left -mt-5 ms-8">
+          <div className="flex flex-col items-start text-center sm:text-left">
             <Image src={logo} alt="Logo" width={100} />
             <p className=" text-gray-700 text-sm">
               Empowering your journey with reliable solutions and innovative
