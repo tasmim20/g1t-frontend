@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { useLoginMutation } from "@/src/redux/api/authApi/authApi";
 import { setAccessToken } from "@/src/redux/api/authApi/authSlice";
+import Link from "next/link";
 
 // Login form interface
 interface LoginFormValues {
@@ -93,6 +94,23 @@ const LoginPage: React.FC = () => {
           )}
         </div>
 
+        {/* <div className="mb-6">
+          <label className="block text-gray-700 text-sm font-semibold mb-2">
+            Password
+          </label>
+          <input
+            type="password"
+            {...register("password")}
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+            placeholder="Enter your password"
+          />
+          {errors.password && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.password.message}
+            </p>
+          )}
+        </div> */}
+
         <div className="mb-6">
           <label className="block text-gray-700 text-sm font-semibold mb-2">
             Password
@@ -108,8 +126,17 @@ const LoginPage: React.FC = () => {
               {errors.password.message}
             </p>
           )}
-        </div>
 
+          {/* Forgot Password link */}
+          <div className="mt-2 text-right">
+            <Link
+              href="/forgot-password"
+              className="text-blue-600 text-sm underline"
+            >
+              Forgot Password?
+            </Link>
+          </div>
+        </div>
         <button
           type="submit"
           disabled={isLoading}
