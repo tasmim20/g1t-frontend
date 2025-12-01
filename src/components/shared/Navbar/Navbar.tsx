@@ -6,6 +6,7 @@ import logo from "../../../../public/assets/green1taxi1.png";
 import Image from "next/image";
 import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa";
 import { useAuthUser } from "@/src/redux/api/authApi/useAuthUser"; // Use the custom hook
+import Link from "next/link";
 
 // Mock pages for testing purposes
 const pages = [
@@ -56,7 +57,7 @@ function Navbar() {
   return (
     <div className="flex-grow">
       {/* Main Navbar */}
-      <nav className="bg-[#e6fdeb] py-2 px-10 border-b border-gray-200 relative z-20">
+      <nav className="bg-[#fefffe] py-2 px-10 border-b border-gray-200 relative z-20">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center">
             {/* Logo */}
@@ -158,12 +159,12 @@ function Navbar() {
             </a>
           ))}
           {isLoggedIn && user && (
-            <a
+            <Link
               href={getDashboardLink()}
               className="block text-lg font-medium text-black"
             >
               Dashboard
-            </a>
+            </Link>
           )}
         </div>
       </div>

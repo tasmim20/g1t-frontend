@@ -22,7 +22,7 @@ const authSlice = createSlice({
       state.user = { role: action.payload.role };
       state.accessToken = action.payload.accessToken;
     },
-    setAccessToken: (state, action: PayloadAction<string>) => {
+    setAccessToken: (state, action: PayloadAction<string | null>) => {
       state.accessToken = action.payload;
     },
     logout: (state) => {

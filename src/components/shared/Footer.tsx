@@ -3,7 +3,7 @@ import logo from "../../../public/assets/LogoName.png";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#e6fdeb] border-t border-gray-200 pt-10 pb-6 mt-10">
+    <footer className="bg-[#fefffe] border-t border-gray-200 pt-10 pb-6 mt-10">
       <div className="container mx-auto px-4">
         {/* Upper Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">

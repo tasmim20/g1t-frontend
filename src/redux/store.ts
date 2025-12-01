@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import {
   persistStore,
   persistReducer,
@@ -9,21 +9,35 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // localStorage
+import storage from "redux-persist/lib/storage";
+import authReducer from "./api/authApi/authSlice";
 import { baseApi } from "./api/baseApi";
-import { rootReducer } from "./rootReducer";
 
+// --------------------
 // Persist config
+// --------------------
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"], // persist only auth slice
+  whitelist: ["auth"], // only persist auth slice
 };
 
-// Create persisted reducer
+// --------------------
+// Root reducer
+// --------------------
+const rootReducer = combineReducers({
+  auth: authReducer,
+  [baseApi.reducerPath]: baseApi.reducer, // do NOT persist baseApi
+});
+
+// --------------------
+// Persisted reducer
+// --------------------
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+// --------------------
 // Configure store
+// --------------------
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
@@ -31,12 +45,16 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(baseApi.middleware), // add RTK Query middleware
+    }).concat(baseApi.middleware),
 });
 
+// --------------------
 // Persistor
+// --------------------
 export const persistor = persistStore(store);
 
-// TypeScript types
+// --------------------
+// Types
+// --------------------
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

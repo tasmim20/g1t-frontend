@@ -1,5 +1,11 @@
+import HeroSection from "@/src/components/HeroSection";
+
 const page = () => {
-  return <div>Welcome to green1taxi 2025 </div>;
+  return (
+    <div>
+      <HeroSection />{" "}
+    </div>
+  );
 };
 
 export default page;

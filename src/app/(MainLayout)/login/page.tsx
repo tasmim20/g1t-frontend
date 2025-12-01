@@ -11,9 +11,10 @@ import { useRouter } from "next/navigation";
 
 import { useDispatch } from "react-redux";
 import { useLoginMutation } from "@/src/redux/api/authApi/authApi";
-import { setAccessToken } from "@/src/redux/api/authApi/authSlice";
+import { setAccessToken, setUser } from "@/src/redux/api/authApi/authSlice";
 import Link from "next/link";
-
+import { setMemoryAccessToken } from "@/src/utils/auth/tokenService";
+// import { setMemoryAccessToken } from "@/src/utils/auth/tokenService";
 // Login form interface
 interface LoginFormValues {
   email: string;
@@ -47,9 +48,8 @@ const LoginPage: React.FC = () => {
       const res: any = await login(data).unwrap();
 
       // Access token stored in Redux memory
-      dispatch(setAccessToken(res.accessToken));
-
-      toast.success("Login successful!");
+      setMemoryAccessToken(res.accessToken);
+      dispatch(setUser({ role: res.role, accessToken: res.accessToken }));
 
       // Redirect based on role
       if (res.role === "RIDER") router.replace("/dashboard/rider");
@@ -93,23 +93,6 @@ const LoginPage: React.FC = () => {
             <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
           )}
         </div>
-
-        {/* <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-semibold mb-2">
-            Password
-          </label>
-          <input
-            type="password"
-            {...register("password")}
-            className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-            placeholder="Enter your password"
-          />
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.password.message}
-            </p>
-          )}
-        </div> */}
 
         <div className="mb-6">
           <label className="block text-gray-700 text-sm font-semibold mb-2">
