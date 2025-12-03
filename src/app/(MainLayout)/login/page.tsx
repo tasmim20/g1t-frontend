@@ -14,6 +14,8 @@ import { useLoginMutation } from "@/src/redux/api/authApi/authApi";
 import { setAccessToken, setUser } from "@/src/redux/api/authApi/authSlice";
 import Link from "next/link";
 import { setMemoryAccessToken } from "@/src/utils/auth/tokenService";
+import { getTokenExpiry, verifyToken } from "@/src/utils/verifyToken";
+import { startTokenRefresh } from "@/src/helpers/tokenManager";
 // import { setMemoryAccessToken } from "@/src/utils/auth/tokenService";
 // Login form interface
 interface LoginFormValues {
@@ -46,10 +48,30 @@ const LoginPage: React.FC = () => {
     setLoginError(null);
     try {
       const res: any = await login(data).unwrap();
+      const token = res.accessToken;
 
-      // Access token stored in Redux memory
+      // -------------------
+      // 2️⃣ Store token in memory (for axios interceptors / proactive refresh)
+      // -------------------
       setMemoryAccessToken(res.accessToken);
-      dispatch(setUser({ role: res.role, accessToken: res.accessToken }));
+
+      // Access token stored in Redux memorypro
+      dispatch(
+        setUser({
+          role: res.role,
+          accessToken: res.accessToken,
+        })
+      );
+
+      startTokenRefresh(token);
+
+      // -------------------
+      // 3️⃣ Optional: decode token if needed
+      // -------------------
+      const decoded = verifyToken(res.accessToken);
+      console.log("Decoded token:", decoded);
+      // setMemoryAccessToken(res.accessToken);
+      // dispatch(setUser({ role: res.role, accessToken: res.accessToken }));
 
       // Redirect based on role
       if (res.role === "RIDER") router.replace("/dashboard/rider");

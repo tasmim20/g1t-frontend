@@ -6,8 +6,8 @@ import {
   selectAccessToken,
 } from "@/src/redux/api/authApi/authSlice";
 
-import { instance } from "../helpers/axios/axiosInstance";
 import { setMemoryAccessToken } from "../utils/auth/tokenService";
+import instance from "../helpers/axios/axiosInstance";
 
 export const AuthInitializer = ({ children }: { children: ReactNode }) => {
   const dispatch = useDispatch();

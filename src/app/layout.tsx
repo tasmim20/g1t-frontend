@@ -1,8 +1,11 @@
+import "@/src/redux/setupTokenSync"; // <-- activate memory→redux sync
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Providers from "../lib/providers/providers";
+import AppInitializer from "../helpers/AppInitializer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +33,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {" "}
-        <Providers> {children}</Providers>
+        <Providers>
+          {" "}
+          <AppInitializer>{children}</AppInitializer>
+        </Providers>
         <Toaster />
       </body>
     </html>

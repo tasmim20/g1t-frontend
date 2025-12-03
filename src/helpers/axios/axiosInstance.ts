@@ -1,93 +1,87 @@
-// src/helpers/axios/axiosInstance.ts
-import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
-import { store } from "@/src/redux/store";
-import { setAccessToken } from "@/src/redux/api/authApi/authSlice";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/helpers/axiosInstance.ts
+import axios from "axios";
+import {
+  getMemoryAccessToken,
+  setMemoryAccessToken,
+} from "@/src/utils/auth/tokenService";
+import {
+  startTokenRefresh,
+  stopTokenRefresh,
+  setAxiosAuth,
+} from "../tokenManager";
 
-// Memory token holder
-let accessTokenMemory: string | null = null;
-export const setMemoryAccessToken = (token: string | null) => {
-  accessTokenMemory = token;
-};
-
-// Flag & queue for refresh requests
-export const refreshState = { isRefreshing: false };
-let refreshSubscribers: ((token: string) => void)[] = [];
-
-export const onRefreshed = (token: string) => {
-  refreshSubscribers.forEach((cb) => cb(token));
-  refreshSubscribers = [];
-};
-
-// Axios for main API calls
-export const instance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
-  withCredentials: true, // include cookies
-  headers: { "Content-Type": "application/json" },
-});
-
-// Axios for refresh token call
-export const refreshAxios = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
+const instance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL || "",
   withCredentials: true,
 });
 
-// Attach access token from memory
-instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  if (accessTokenMemory) {
-    config.headers["Authorization"] = `Bearer ${accessTokenMemory}`;
+// --------------------
+// REQUEST: attach token from memory only
+// --------------------
+instance.interceptors.request.use((config) => {
+  const token = getMemoryAccessToken();
+  if (token && config.headers) {
+    config.headers["Authorization"] = `Bearer ${token}`;
   }
   return config;
 });
 
-// Handle 401 → refresh token
-instance.interceptors.response.use(
-  (response) => response,
-  async (error: AxiosError) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig & {
-      _retry?: boolean;
-    };
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      originalRequest.url !== "/auth/refresh"
-    ) {
-      originalRequest._retry = true;
+// --------------------
+// RESPONSE: handle 401 -> refresh -> retry
+// --------------------
+let isRefreshing = false;
+let queue: Array<{ resolve: (v?: any) => void; reject: (e?: any) => void }> =
+  [];
 
-      if (refreshState.isRefreshing) {
-        // Queue requests
-        return new Promise((resolve) => {
-          refreshSubscribers.push((token) => {
-            originalRequest.headers["Authorization"] = `Bearer ${token}`;
-            resolve(instance(originalRequest));
-          });
+function processQueue(error: any, token: string | null = null) {
+  queue.forEach((p) => (error ? p.reject(error) : p.resolve(token)));
+  queue = [];
+}
+
+instance.interceptors.response.use(
+  (res) => res,
+  async (error) => {
+    const original = error.config;
+
+    if (error.response?.status === 401 && !original._retry) {
+      original._retry = true;
+
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          queue.push({ resolve, reject });
+        }).then((token) => {
+          original.headers["Authorization"] = `Bearer ${token}`;
+          return instance(original);
         });
       }
 
-      refreshState.isRefreshing = true;
-
+      isRefreshing = true;
       try {
-        const res = await refreshAxios.post<{ accessToken: string }>(
-          "/auth/refresh"
-        );
-        const newToken = res.data.accessToken;
-        if (!newToken) throw new Error("No access token from refresh");
+        const res = await instance.post("/auth/refresh", {
+          withCredentials: true,
+        });
+        const newToken = res.data?.access_token ?? res.data?.accessToken;
 
-        // Save in memory & Redux
+        if (!newToken) throw new Error("No token from refresh");
+
+        // 🔹 update memory token (Redux auto-updates via callback)
         setMemoryAccessToken(newToken);
-        store.dispatch(setAccessToken(newToken));
+        setAxiosAuth(newToken);
+        startTokenRefresh(newToken);
 
-        // Notify queued requests
-        onRefreshed(newToken);
+        processQueue(null, newToken);
 
-        originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
-        return instance(originalRequest);
+        original.headers["Authorization"] = `Bearer ${newToken}`;
+        return instance(original);
       } catch (err) {
-        setMemoryAccessToken(null);
-        store.dispatch(setAccessToken(null));
-        if (typeof window !== "undefined") window.location.href = "/login";
+        processQueue(err, null);
+        stopTokenRefresh();
+        setMemoryAccessToken(null); // memory cleared -> Redux auto-clears
+        setAxiosAuth(null);
         return Promise.reject(err);
       } finally {
-        refreshState.isRefreshing = false;
+        isRefreshing = false;
       }
     }
 
@@ -95,8 +89,4 @@ instance.interceptors.response.use(
   }
 );
 
-// Initialize token from Redux on app load
-export const initAxiosToken = () => {
-  const token = store.getState().auth.accessToken;
-  if (token) setMemoryAccessToken(token);
-};
+export default instance;

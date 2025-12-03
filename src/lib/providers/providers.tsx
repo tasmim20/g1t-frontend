@@ -14,19 +14,23 @@
 //   );
 // };
 
+// "use client";
+
 "use client";
 import { ReactNode, useEffect } from "react";
-import { Provider, useDispatch } from "react-redux";
+import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "@/src/redux/store";
-import { initAxiosToken } from "@/src/helpers/axios/axiosInstance";
+import { setMemoryAccessToken } from "@/src/utils/auth/tokenService";
+import { startTokenRefresh } from "@/src/helpers/tokenManager";
 
 function AuthInitializer({ children }: { children: ReactNode }) {
-  const dispatch = useDispatch();
-
   useEffect(() => {
-    // Initialize memory token from Redux after login or reload
-    initAxiosToken();
+    const reduxToken = store.getState().auth.accessToken;
+    if (reduxToken) {
+      setMemoryAccessToken(reduxToken);
+      startTokenRefresh(reduxToken); // start proactive refresh
+    }
   }, []);
 
   return <>{children}</>;

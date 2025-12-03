@@ -10,10 +10,9 @@ import {
   getMemoryAccessToken,
   setMemoryAccessToken,
 } from "@/src/utils/auth/tokenService";
-import { instance } from "@/src/helpers/axios/axiosInstance";
+import instance from "@/src/helpers/axios/axiosInstance";
 
 const RiderDashboard = () => {
-  const { user, isLoggedIn } = useAuthUser();
   const [profile, setProfile] = useState<RiderProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,22 +53,47 @@ const RiderDashboard = () => {
   //   fetchProfile();
   // }, [isLoggedIn]);
 
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     setLoading(true);
+  //     setError(null);
+
+  //     try {
+  //       // Axios instance automatically adds Authorization header
+  //       const res = await instance.get<RiderProfile>("/user/profile/me");
+  //       setProfile(res.data);
+  //     } catch (err: any) {
+  //       console.error("Failed to fetch Rider profile:", err);
+  //       setError(
+  //         err.response?.data?.message ||
+  //           err.message ||
+  //           "Failed to fetch profile"
+  //       );
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchProfile();
+  // }, []);
+
   useEffect(() => {
-    if (!isLoggedIn) return;
+    // Sync Redux token to memory for Axios instance
+    const reduxToken = store.getState().auth.accessToken;
+    if (reduxToken && !getMemoryAccessToken()) {
+      setMemoryAccessToken(reduxToken);
+    }
 
     const fetchProfile = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        if (!getMemoryAccessToken()) {
-          const reduxToken = store.getState().auth.accessToken;
-          if (reduxToken) setMemoryAccessToken(reduxToken);
-        }
-
+        // Axios instance automatically attaches token from memory
         const res = await instance.get<RiderProfile>("/user/profile/me");
         setProfile(res.data);
       } catch (err: any) {
+        console.error("Failed to fetch Rider profile:", err);
         setError(
           err.response?.data?.message ||
             err.message ||
@@ -81,7 +105,7 @@ const RiderDashboard = () => {
     };
 
     fetchProfile();
-  }, [isLoggedIn]);
+  }, []);
 
   if (loading)
     return <div className="text-center mt-10">Loading Rider profile...</div>;
