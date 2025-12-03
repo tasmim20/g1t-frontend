@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 // use Axios instance with interceptors
 import { RiderProfile } from "@/src/types";
-import { useAuthUser } from "@/src/redux/api/authApi/useAuthUser";
 import { FaUserCircle } from "react-icons/fa";
 import { store } from "@/src/redux/store";
 import {
@@ -16,66 +15,6 @@ const RiderDashboard = () => {
   const [profile, setProfile] = useState<RiderProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     try {
-  //       // Call /user/profile/me without query params
-  //       const res = await instance.get<RiderProfile>("/user/profile/me");
-  //       setProfile(res.data);
-  //     } catch (err: any) {
-  //       console.error("Failed to fetch Rider profile:", err);
-  //       setError(err.response?.data?.message || err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   if (isLoggedIn && user?.role === "RIDER") {
-  //     fetchProfile();
-  //   }
-  // }, [isLoggedIn, user]);
-  // useEffect(() => {
-  //   if (!isLoggedIn) return;
-  //   // setMemoryAccessToken(store.getState().auth.accessToken);
-
-  //   const fetchProfile = async () => {
-  //     try {
-  //       const res = await instance.get<RiderProfile>("/user/profile/me");
-  //       setProfile(res.data);
-  //     } catch (err: any) {
-  //       setError(err.response?.data?.message || err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchProfile();
-  // }, [isLoggedIn]);
-
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     setLoading(true);
-  //     setError(null);
-
-  //     try {
-  //       // Axios instance automatically adds Authorization header
-  //       const res = await instance.get<RiderProfile>("/user/profile/me");
-  //       setProfile(res.data);
-  //     } catch (err: any) {
-  //       console.error("Failed to fetch Rider profile:", err);
-  //       setError(
-  //         err.response?.data?.message ||
-  //           err.message ||
-  //           "Failed to fetch profile"
-  //       );
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchProfile();
-  // }, []);
 
   useEffect(() => {
     // Sync Redux token to memory for Axios instance

@@ -19,7 +19,7 @@ import { baseApi } from "./api/baseApi";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"], // only persist auth slice
+  whitelist: [], // only persist auth slice
 };
 
 // --------------------

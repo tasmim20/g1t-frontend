@@ -11,10 +11,10 @@ import { useRouter } from "next/navigation";
 
 import { useDispatch } from "react-redux";
 import { useLoginMutation } from "@/src/redux/api/authApi/authApi";
-import { setAccessToken, setUser } from "@/src/redux/api/authApi/authSlice";
+import { setUser } from "@/src/redux/api/authApi/authSlice";
 import Link from "next/link";
 import { setMemoryAccessToken } from "@/src/utils/auth/tokenService";
-import { getTokenExpiry, verifyToken } from "@/src/utils/verifyToken";
+import { verifyToken } from "@/src/utils/verifyToken";
 import { startTokenRefresh } from "@/src/helpers/tokenManager";
 // import { setMemoryAccessToken } from "@/src/utils/auth/tokenService";
 // Login form interface

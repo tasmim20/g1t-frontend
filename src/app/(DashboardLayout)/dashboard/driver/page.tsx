@@ -1,34 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { DriverProfile } from "@/src/types";
-import { useAuthUser } from "@/src/redux/api/authApi/useAuthUser";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/redux/store";
 import { FaUserCircle, FaCarSide } from "react-icons/fa";
+import { DriverProfile } from "@/src/types";
+import instance from "@/src/helpers/axios/axiosInstance";
+import { useAuthUser } from "@/src/redux/api/authApi/useAuthUser";
 
 const DriverDashboard = () => {
   const { user, id, isLoggedIn } = useAuthUser();
-  const accessToken = useSelector((state: RootState) => state.auth.accessToken);
   const [profile, setProfile] = useState<DriverProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-
   useEffect(() => {
+    if (!isLoggedIn || user?.role !== "DRIVER") return;
+
     const fetchProfile = async () => {
-      if (!id || !user?.role || !accessToken) return;
+      setLoading(true);
+      setError(null);
 
       try {
-        const res = await axios.get<DriverProfile>(
-          `${BACKEND_URL}/user/profile`,
-          {
-            params: { userId: id, role: user.role },
-            headers: { Authorization: `Bearer ${accessToken}` },
-          }
-        );
+        const res = await instance.get<DriverProfile>("/user/profile/me");
         setProfile(res.data);
       } catch (err: any) {
         console.error("Failed to fetch Driver profile:", err);
@@ -38,10 +30,8 @@ const DriverDashboard = () => {
       }
     };
 
-    if (isLoggedIn && user?.role === "DRIVER") {
-      fetchProfile();
-    }
-  }, [id, user, isLoggedIn, accessToken, BACKEND_URL]);
+    fetchProfile();
+  }, [isLoggedIn, user]);
 
   if (loading)
     return <div className="text-center mt-10">Loading Driver profile...</div>;
@@ -62,7 +52,6 @@ const DriverDashboard = () => {
             {profile.firstName} {profile.lastName}
           </h1>
           <p className="text-gray-600">{profile.email}</p>
-
           {profile.address && (
             <p className="text-gray-600">{profile.address}</p>
           )}
@@ -82,7 +71,7 @@ const DriverDashboard = () => {
         <div className="mt-4 p-4 bg-yellow-50 rounded-lg border border-gray-100 flex items-center space-x-4">
           <FaCarSide className="w-8 h-8 text-yellow-600" />
           <div>
-            <p className="text-gray-600 font-semibold">BMW</p>
+            <p className="text-gray-600 font-semibold">BMW</p>{" "}
             <p className="text-gray-500 text-sm">1345GHD</p>
           </div>
         </div>
@@ -91,18 +80,18 @@ const DriverDashboard = () => {
       {/* Stats */}
       <div className="mt-6 grid grid-cols-2 gap-4">
         <div className="p-4 bg-green-50 rounded-lg text-center">
-          <p className="text-sm text-gray-500">Rides Completed</p>
+          <p className="text-sm text-gray-500">Rides Completed</p>{" "}
           <p className="font-bold text-lg">10</p>
         </div>
         <div className="p-4 bg-blue-50 rounded-lg text-center">
-          <p className="text-sm text-gray-500">Rating</p>
+          <p className="text-sm text-gray-500">Rating</p>{" "}
           <p className="font-bold text-lg">⭐</p>
         </div>
       </div>
 
       {/* Availability */}
       <div className="mt-6 p-4 bg-purple-50 rounded-lg border border-gray-100 text-center">
-        <p className="text-gray-600 font-semibold">Availability Status</p>
+        <p className="text-gray-600 font-semibold">Availability Status</p>{" "}
         <p className="text-lg font-bold">ONLINE</p>
       </div>
     </div>
