@@ -41,9 +41,13 @@ export function startTokenRefresh(token: string) {
 
   refreshTimer = setTimeout(async () => {
     try {
-      const res = await instance.post("/auth/refresh", {
-        withCredentials: true,
-      });
+      const res = await instance.post(
+        "/auth/refresh",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
       const newToken = res.data?.access_token ?? res.data?.accessToken;
       if (!newToken) throw new Error("No token");
 

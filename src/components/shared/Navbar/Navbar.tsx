@@ -7,6 +7,7 @@ import Image from "next/image";
 import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa";
 import { useAuthUser } from "@/src/redux/api/authApi/useAuthUser"; // Use the custom hook
 import Link from "next/link";
+import { logoutUser } from "@/src/utils/actions/logout";
 
 // Mock pages for testing purposes
 const pages = [
@@ -116,9 +117,14 @@ function Navbar() {
                     </a>
                   </div>
                   <div className="px-4 py-2 border-t">
-                    <a href="/logout" className="block text-red-600">
-                      Sign out
-                    </a>
+                    {isLoggedIn && (
+                      <button
+                        className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600"
+                        onClick={logoutUser}
+                      >
+                        Logout
+                      </button>
+                    )}
                   </div>
                 </div>
               )}

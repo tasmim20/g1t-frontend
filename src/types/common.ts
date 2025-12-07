@@ -94,6 +94,7 @@ export interface RiderProfile {
   email: string;
   role: "RIDER";
   profilePhoto?: string;
+  mobileNumber?: string;
   bio?: string;
   address?: string;
 }

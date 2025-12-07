@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -22,7 +22,7 @@ export interface Rider {
   mobileNumber: string;
   password: string;
   role: Role;
-  photo?: string;
+  photo?: File;
   isConfirmed?: boolean;
 }
 
@@ -40,6 +40,7 @@ const validationSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
   role: z.enum([Role.RIDER, Role.DRIVER]),
   drivingLicense: z.string().optional(), // Required if role=DRIVER
+  photo: z.any().optional(),
 });
 
 type FormValues = Rider & { drivingLicense?: string };
@@ -49,6 +50,7 @@ const RegisterPage: React.FC = () => {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(validationSchema),
@@ -141,11 +143,21 @@ const RegisterPage: React.FC = () => {
           <p className="text-red-500 text-sm">{errors.password.message}</p>
         )}
 
-        <input
-          {...register("photo")}
-          placeholder="Photo URL (optional)"
-          className="w-full border p-2 rounded"
+        <Controller
+          control={control}
+          name="photo"
+          render={({ field }) => (
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => field.onChange(e.target.files?.[0])}
+              className="w-full border p-2 rounded"
+            />
+          )}
         />
+        {errors.photo && (
+          <p className="text-red-500 text-sm">{errors.photo.message}</p>
+        )}
 
         <select {...register("role")} className="w-full border p-2 rounded">
           <option value="">Select Role</option>
