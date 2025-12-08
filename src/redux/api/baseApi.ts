@@ -1,5 +1,5 @@
+import { axiosBaseQuery } from "@/src/helpers/axios/axiosBaseQuery";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { axiosBaseQuery } from "../../helpers/axios/axiosBaseQuery";
 
 // Access backend URL from environment
 export const baseApi = createApi({

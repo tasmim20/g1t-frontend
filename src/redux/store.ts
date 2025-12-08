@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import {
   persistStore,

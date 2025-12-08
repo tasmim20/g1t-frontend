@@ -53,7 +53,6 @@ const LoginPage: React.FC = () => {
       // -------------------
       // 2️⃣ Store token in memory (for axios interceptors / proactive refresh)
       // -------------------
-      setMemoryAccessToken(res.accessToken);
 
       // Access token stored in Redux memorypro
       dispatch(
@@ -62,14 +61,15 @@ const LoginPage: React.FC = () => {
           accessToken: res.accessToken,
         })
       );
+      setMemoryAccessToken(res.accessToken);
 
       startTokenRefresh(token);
 
       // -------------------
       // 3️⃣ Optional: decode token if needed
       // -------------------
-      const decoded = verifyToken(res.accessToken);
-      console.log("Decoded token:", decoded);
+      // const decoded = verifyToken(res.accessToken);
+      // console.log("Decoded token:", decoded);
       // setMemoryAccessToken(res.accessToken);
       // dispatch(setUser({ role: res.role, accessToken: res.accessToken }));
 
@@ -153,9 +153,9 @@ const LoginPage: React.FC = () => {
         <div className="mt-4 text-center">
           <p className="text-gray-600 text-sm">
             Don't have an account?{" "}
-            <a href="/register" className="text-blue-600 underline">
+            <Link href="/register" className="text-blue-600 underline">
               Register
-            </a>
+            </Link>
           </p>
         </div>
       </form>

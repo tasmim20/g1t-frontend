@@ -21,6 +21,7 @@ const instance = axios.create({
 // --------------------
 instance.interceptors.request.use((config) => {
   const token = getMemoryAccessToken();
+  // console.log("Axios request token:", token);
   if (token && config.headers) {
     config.headers["Authorization"] = `Bearer ${token}`;
   }

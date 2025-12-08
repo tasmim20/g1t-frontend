@@ -107,6 +107,8 @@ export interface DriverProfile {
   email: string;
   role: "DRIVER";
   profilePhoto?: string;
+  mobileNumber?: string;
+  drivingLicense: string;
   bio?: string;
   address?: string;
 }

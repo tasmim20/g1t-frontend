@@ -65,15 +65,26 @@ const RegisterPage: React.FC = () => {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setRegisterError(null);
+    // Build FormData
+    const formData = new FormData();
+    formData.append("firstName", data.firstName);
+    formData.append("lastName", data.lastName);
+    formData.append("email", data.email);
+    formData.append("mobileNumber", data.mobileNumber);
+    formData.append("password", data.password);
+    formData.append("role", data.role);
 
     // If DRIVER, ensure drivingLicense is provided
-    if (data.role === Role.DRIVER && !data.drivingLicense) {
-      setRegisterError("Driving license is required for drivers.");
-      return;
+    if (data.role === Role.DRIVER) {
+      formData.append("drivingLicense", data.drivingLicense!);
     }
-
+    if (data.photo) {
+      formData.append("photo", data.photo); // THIS IS THE FILE
+    }
+    console.log(formData);
     try {
-      const res: any = await signup(data).unwrap();
+      const res: any = await signup(formData).unwrap();
+      console.log(res);
 
       if (res?.message?.includes("registered successfully")) {
         toast.success(

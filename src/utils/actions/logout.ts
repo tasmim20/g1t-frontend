@@ -1,6 +1,5 @@
 // src/utils/logoutUser.ts
 import { store, persistor } from "@/src/redux/store";
-import { authApi } from "@/src/redux/api/authApi/authApi"; // your RTK Query API
 import { logout } from "@/src/redux/api/authApi/authSlice";
 import { setMemoryAccessToken } from "../auth/tokenService";
 import instance from "@/src/helpers/axios/axiosInstance";
